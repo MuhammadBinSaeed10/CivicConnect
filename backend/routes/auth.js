@@ -2,44 +2,52 @@ const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
 const {
-    register,
-    login,
-    getProfile,
-    updateProfile,
-    uploadProfilePhoto,
+  register,
+  login,
+  getProfile,
+  updateProfile,
+  uploadProfilePhoto,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 const { handleSingleUpload } = require("../middleware/upload");
 
+// Debug middleware
+router.use((req, res, next) => {
+  if (req.path === "/register" || req.path === "/login") {
+    console.log(`[AUTH] ${req.method} ${req.path}`, req.body);
+  }
+  next();
+});
+
 // Validation rules
 const registerValidation = [
-    body("username")
-        .trim()
-        .notEmpty()
-        .withMessage("Username is required")
-        .isLength({ min: 3, max: 30 })
-        .withMessage("Username must be 3-30 characters"),
-    body("email")
-        .trim()
-        .notEmpty()
-        .withMessage("Email is required")
-        .isEmail()
-        .withMessage("Please enter a valid email"),
-    body("password")
-        .notEmpty()
-        .withMessage("Password is required")
-        .isLength({ min: 6 })
-        .withMessage("Password must be at least 6 characters"),
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage("Username is required")
+    .isLength({ min: 3, max: 30 })
+    .withMessage("Username must be 3-30 characters"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please enter a valid email"),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
 ];
 
 const loginValidation = [
-    body("email")
-        .trim()
-        .notEmpty()
-        .withMessage("Email is required")
-        .isEmail()
-        .withMessage("Please enter a valid email"),
-    body("password").notEmpty().withMessage("Password is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please enter a valid email"),
+  body("password").notEmpty().withMessage("Password is required"),
 ];
 
 // Public routes
